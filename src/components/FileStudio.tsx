@@ -114,7 +114,7 @@ export const FileStudio: React.FC<FileStudioProps> = ({ onBack, addToast, userPr
     canvas.height = Math.ceil(viewport.height);
     const context = canvas.getContext('2d');
     if (!context) return;
-    await sourcePage.render({ canvasContext: context, viewport }).promise;
+    await sourcePage.render({ canvas, canvasContext: context, viewport }).promise;
     const current = pdfPages[pageIndex];
     if (current.rotation % 360 !== 0) {
       const rotated = document.createElement('canvas');
@@ -322,11 +322,9 @@ export const FileStudio: React.FC<FileStudioProps> = ({ onBack, addToast, userPr
       pptx.company = 'StudySnap';
       pptx.subject = 'StudySnap presentation';
       pptx.title = pptSlides[0]?.title || 'StudySnap Presentation';
-      pptx.lang = 'en-US';
       pptx.theme = {
         headFontFace: 'Aptos Display',
         bodyFontFace: 'Aptos',
-        lang: 'en-US',
       };
       pptSlides.forEach((slideState, index) => {
         const slide = pptx.addSlide();

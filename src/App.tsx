@@ -112,7 +112,7 @@ import { QuizView } from './components/views/QuizView';
 import { SearchView } from './components/views/SearchView';
 import { LiveView } from './components/LiveView';
 import CountryContactModal, { StudySnapContact } from './components/CountryContactModal';
-import { ChatsView, UpdatesView, CommunitiesView, CallsView } from './components/views/NavigationViews';
+import { ChatsView, CommunitiesView, CallsView } from './components/views/NavigationViews';
 import { ErrorTracker } from './components/ErrorTracker';
 import { AcademicTimeline } from './components/AcademicTimeline';
 import { KnowledgeBattles } from './components/KnowledgeBattles';
@@ -814,7 +814,7 @@ export default function App() {
       const summary = await generateSummary(text);
       
       const newNote = await DataService.createNote({
-        subject_id: targetSubject.id,
+        subject_id: selectedSubject.id,
         title: text.split('\n')[0].substring(0, 50) || 'Uploaded Note',
         content: text,
         summary: summary,
@@ -1500,7 +1500,7 @@ export default function App() {
     dashboard: 'AI Study Coach', 'studysnap-ai': 'StudySnap AI', scanner: 'Scanner', subject: 'Subject', note: 'Note',
     flashcards: 'Flashcards', quiz: 'Quiz Center', research: 'Research', 'research-hub': 'Research Hub',
     'voice-tutor': 'AI Voice Tutor', 'studyroom': 'Group Study', 'file-studio': 'File Studio', notifications: 'Notifications',
-    statistics: 'Statistics', 'focus-mode': 'Focus Mode', events: 'Academic Events', videos: 'Video Studio'
+    statistics: 'Statistics', events: 'Academic Events', videos: 'Video Studio'
   };
 
   const AppTopBar = () => {

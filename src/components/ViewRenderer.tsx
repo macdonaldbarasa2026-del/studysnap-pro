@@ -35,21 +35,23 @@ const AutoNoteBuilder = React.lazy(() => import('./AutoNoteBuilder').then(m => (
 const ErrorTracker = React.lazy(() => import('./ErrorTracker').then(m => ({ default: m.ErrorTracker ?? m.default })));
 const AcademicTimeline = React.lazy(() => import('./AcademicTimeline').then(m => ({ default: m.AcademicTimeline ?? m.default })));
 const KnowledgeBattles = React.lazy(() => import('./KnowledgeBattles').then(m => ({ default: m.KnowledgeBattles ?? m.default })));
-const StudyBites = React.lazy(() => import('./StudyBites').then(m => ({ default: m.StudyBites ?? m.default })));
-const KnowledgeAlchemy = React.lazy(() => import('./KnowledgeAlchemy').then(m => ({ default: m.KnowledgeAlchemy ?? m.default })));
+const StudyBites = React.lazy(() => import('./StudyBites').then(m => ({ default: m.StudyBites })));
+const KnowledgeAlchemy = React.lazy(() => import('./KnowledgeAlchemy').then(m => ({ default: m.KnowledgeAlchemy })));
 const InstitutionPortal = React.lazy(() => import('./InstitutionPortal').then(m => ({ default: m.InstitutionPortal })));
 const CampusMode = React.lazy(() => import('./CampusMode').then(m => ({ default: m.CampusMode })));
 const WorkspaceSyncView = React.lazy(() => import('./WorkspaceSyncView').then(m => ({ default: m.WorkspaceSyncView })));
 const ResearchHub = React.lazy(() => import('./ResearchHub').then(m => ({ default: m.ResearchHub })));
-const NotificationCenter = React.lazy(() => import('./NotificationCenter').then(m => ({ default: m.NotificationCenter ?? m.default })));
-const AcademicEvents = React.lazy(() => import('./AcademicEvents').then(m => ({ default: m.AcademicEvents ?? m.default })));
+const NotificationCenter = React.lazy(() => import('./NotificationCenter').then(m => ({ default: m.NotificationCenter })));
+const AcademicEvents = React.lazy(() => import('./AcademicEvents').then(m => ({ default: m.AcademicEvents })));
 const AcademicProfileView = React.lazy(() => import('./AcademicProfileView').then(m => ({ default: m.AcademicProfileView })));
 const LearningEngine = React.lazy(() => import('./LearningEngine').then(m => ({ default: m.LearningEngine })));
 const ReputationDashboard = React.lazy(() => import('./ReputationDashboard').then(m => ({ default: m.ReputationDashboard })));
 const AcademicProblemSolver = React.lazy(() => import('./AcademicProblemSolver').then(m => ({ default: m.AcademicProblemSolver })));
 const TeacherInsights = React.lazy(() => import('./TeacherInsights').then(m => ({ default: m.TeacherInsights })));
 const InstitutionReports = React.lazy(() => import('./InstitutionReports').then(m => ({ default: m.InstitutionReports })));
-const NavigationViews = React.lazy(() => import('./views/NavigationViews'));
+const ChatsView = React.lazy(() => import('./views/NavigationViews').then(m => ({ default: m.ChatsView })));
+const CommunitiesView = React.lazy(() => import('./views/NavigationViews').then(m => ({ default: m.CommunitiesView })));
+const CallsView = React.lazy(() => import('./views/NavigationViews').then(m => ({ default: m.CallsView })));
 import { LiveView } from './LiveView';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -619,10 +621,10 @@ export const ViewRenderer: React.FC<ViewRendererProps> = (props) => {
         {view === 'problem-solver' && <motion.div key="problem-solver" {...getAnimationConfig()}><AcademicProblemSolver userProfile={userProfile} onBack={goBack} /></motion.div>}
         {view === 'teacher-insights' && <motion.div key="teacher-insights" {...getAnimationConfig()}><TeacherInsights userProfile={userProfile} onBack={goBack} /></motion.div>}
         {view === 'institution-reports' && <motion.div key="institution-reports" {...getAnimationConfig()}><InstitutionReports userProfile={userProfile} onBack={goBack} /></motion.div>}
-        {view === 'chats' && <motion.div key="chats" {...getAnimationConfig()}><NavigationViews.ChatsView messages={messages} userName={userName} onBack={goBack} onSendMessage={onSendMessage} /></motion.div>}
-        {view === 'updates' && <motion.div key="updates" {...getAnimationConfig()}><NavigationViews.UpdatesView onBack={goBack} /></motion.div>}
-        {view === 'communities' && <motion.div key="communities" {...getAnimationConfig()}><NavigationViews.CommunitiesView onBack={goBack} onGoLive={() => { setIsLive(true); setIsBroadcaster(true); setLiveRoomId('room1'); }} messages={messages} userName={userName} onSendMessage={onSendMessage} /></motion.div>}
-        {view === 'calls' && <motion.div key="calls" {...getAnimationConfig()}><NavigationViews.CallsView onBack={goBack} /></motion.div>}
+        {view === 'chats' && <motion.div key="chats" {...getAnimationConfig()}><ChatsView messages={messages} userName={userName} onBack={goBack} onSendMessage={onSendMessage} /></motion.div>}
+        {view === 'updates' && <motion.div key="updates" {...getAnimationConfig()}><NotificationCenter userName={userName} onBack={goBack} /></motion.div>}
+        {view === 'communities' && <motion.div key="communities" {...getAnimationConfig()}><CommunitiesView onBack={goBack} onGoLive={() => { setIsLive(true); setIsBroadcaster(true); setLiveRoomId('room1'); }} messages={messages} userName={userName} onSendMessage={onSendMessage} /></motion.div>}
+        {view === 'calls' && <motion.div key="calls" {...getAnimationConfig()}><CallsView onBack={goBack} /></motion.div>}
         {isLive && (
           <LiveView 
             userName={userName} 
