@@ -82,7 +82,7 @@ async function startServer() {
     // Socket.io handles its own upgrade listeners on /socket.io/ automatically
   });
 
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Real-time collaboration logic
   const rooms = new Map<string, Set<string>>();
