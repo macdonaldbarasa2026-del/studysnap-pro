@@ -1,4 +1,4 @@
-import{r as n,j as e,a9 as y,bb as w,i as v,U as S,bA as m,bo as C,a7 as _,J as z,bp as R,A,q as $}from"./react-C7ll5uLo.js";import{h as L}from"./index-BAQ1u2X-.js";import{m as l,A as F}from"./motion-BgDnSKss.js";import"./firebase-DDAZ3Olq.js";const q=({userProfile:i,skillPassport:t,onBack:h})=>{const[g,c]=n.useState(!1),[o,b]=n.useState([]),[a,u]=n.useState(null),[j,p]=n.useState(!1),[f,N]=n.useState(!1),x=async()=>{c(!0);try{const s=`Based on the following student profile, suggest 3-4 career paths. 
+import{r as n,j as e,a9 as y,bb as w,i as v,U as S,bA as m,bo as C,a7 as _,J as z,bp as R,A,q as $}from"./react-C7ll5uLo.js";import{h as L}from"./index-DuUKJWGg.js";import{m as l,A as F}from"./motion-BgDnSKss.js";import"./firebase-DDAZ3Olq.js";const q=({userProfile:i,skillPassport:t,onBack:h})=>{const[g,c]=n.useState(!1),[o,b]=n.useState([]),[a,u]=n.useState(null),[j,p]=n.useState(!1),[f,N]=n.useState(!1),x=async()=>{c(!0);try{const s=`Based on the following student profile, suggest 3-4 career paths. 
       Student Name: ${i==null?void 0:i.user_name}
       Age Group: ${i==null?void 0:i.age_group}
       Skills: 

@@ -1,4 +1,4 @@
-import{r as l,j as e,a9 as f,be as g,aj as j,q as w,a7 as y,d as N,av as v,bC as C,bD as k,b4 as z}from"./react-C7ll5uLo.js";import{h as S}from"./index-BAQ1u2X-.js";import{A,m as o}from"./motion-BgDnSKss.js";import"./firebase-DDAZ3Olq.js";const L=({onBack:m,onSave:h})=>{const[n,p]=l.useState(""),[i,d]=l.useState(!1),[s,u]=l.useState(null),[c,x]=l.useState(null),b=async()=>{if(n.trim()){d(!0),x(null);try{const t=`Convert the following raw content into structured, exam-ready notes. 
+import{r as l,j as e,a9 as f,be as g,aj as j,q as w,a7 as y,d as N,av as v,bC as C,bD as k,b4 as z}from"./react-C7ll5uLo.js";import{h as S}from"./index-DuUKJWGg.js";import{A,m as o}from"./motion-BgDnSKss.js";import"./firebase-DDAZ3Olq.js";const L=({onBack:m,onSave:h})=>{const[n,p]=l.useState(""),[i,d]=l.useState(!1),[s,u]=l.useState(null),[c,x]=l.useState(null),b=async()=>{if(n.trim()){d(!0),x(null);try{const t=`Convert the following raw content into structured, exam-ready notes. 
         Include a clear title, a brief summary, and well-organized content with headings and bullet points.
         Format the response as JSON with keys: title, summary, content.
         
