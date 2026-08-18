@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- GLOBAL HELPERS ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() { return isSignedIn(); }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function ageRank(age) {
+      return age == 'adult' ? 3 : age == 'teen' ? 2 : age == 'kid' ? 1 : 0;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- VALIDATION BLUEPRINTS ---
+    
+    function isValidUserProfile(data) {
+      return data.user_name is string && data.user_name.size() > 0 && data.user_name.size() <= 100 &&
+             data.email is string && data.email.size() <= 255 &&
+             data.age_group in ['baby', 'kid', 'teen', 'adult'] &&
+             data.role in ['student', 'teacher', 'lecturer', 'researcher', 'admin', 'institution_owner'] &&
+             (!('requested_role' in data) || data.requested_role in ['teacher', 'lecturer', 'researcher', 'admin', 'institution_owner']);
+    }
+
+    function isValidSubject(data) {
+      return data.owner_id == request.auth.uid &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.color is string && data.color.size() <= 50;
+    }
+
+    function isValidNote(data) {
+      return data.owner_id == request.auth.uid &&
+             data.subject_id is string &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 100000;
+    }
+
+    // --- COLLECTIONS ---
+
+    // User Profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      // Users may self-create only as learners. Privileged roles are provisioned by an admin.
+      allow create: if (isOwner(userId) && isValidUserProfile(incoming()) && incoming().created_at == request.time && incoming().role == 'student')
+                    || (isAdmin() && isValidUserProfile(incoming()));
+
+      // A user can update their own profile, but can never self-promote by changing role.
+      allow update: if isOwner(userId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly([
+                        'user_name', 'bio', 'age_group', 'reputation_score', 'reputation_level', 
+                        'sound_enabled', 'parental_lock', 'phone', 'description', 
+                        'avatar_filter_enabled', 'followers_count', 'following_count', 
+                        'subscribers_count', 'personal_venues', 'screen_time_limit', 
+                        'parental_pin', 'parental_pin_updated_at', 'can_go_live', 'institution_id', 
+                        'department_id', 'updated_at', 'requested_role'
+                      ])
+                      && (!incoming().diff(existing()).affectedKeys().hasAny(['age_group'])
+                          || (incoming().age_group in ['baby', 'kid', 'teen', 'adult']
+                              && ageRank(incoming().age_group) <= ageRank(existing().age_group)))
+                    || isAdmin();
+    }
+
+    // Subjects
+    match /subjects/{subjectId} {
+      allow list: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow get: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow create: if isVerified() && isValidId(subjectId) && isValidSubject(incoming()) && incoming().created_at == request.time;
+      allow update: if isVerified() && existing().owner_id == request.auth.uid && 
+                      isValidSubject(incoming()) &&
+                      incoming().owner_id == existing().owner_id &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['name', 'color']);
+      allow delete: if isVerified() && existing().owner_id == request.auth.uid;
+    }
+
+    // Notes
+    match /notes/{noteId} {
+      allow list: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow get: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow create: if isVerified() && isValidId(noteId) && isValidNote(incoming()) && incoming().created_at == request.time;
+      allow update: if isVerified() && existing().owner_id == request.auth.uid && 
+                      isValidNote(incoming()) &&
+                      incoming().owner_id == existing().owner_id &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['title', 'content', 'summary', 'is_favorite', 'is_locked', 'updated_at']);
+      allow delete: if isVerified() && existing().owner_id == request.auth.uid;
+    }
+
+    // Activities
+    match /activities/{activityId} {
+      allow list: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow get: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow create: if isVerified() && isValidId(activityId) && incoming().owner_id == request.auth.uid && incoming().created_at == request.time;
+    }
+
+    // Admins Collection (Only for isAdmin helper)
+    match /admins/{adminId} {
+      // Only an admin may read admin records (including their own), so
+      // signed-in non-admin users (including anonymous/guest accounts)
+      // can no longer enumerate who the admins are.
+      allow read: if isAdmin();
+    }
+
+
+    match /flashcards/{flashcardId} {
+      allow list: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow get: if isVerified() && resource.data.owner_id == request.auth.uid;
+      allow create: if isVerified() && isValidId(flashcardId) && incoming().owner_id == request.auth.uid && incoming().note_id is string && incoming().question is string && incoming().question.size() <= 5000 && incoming().answer is string && incoming().answer.size() <= 10000;
+      allow update, delete: if isVerified() && existing().owner_id == request.auth.uid;
+    }
+
+
+    // Institution verification: public users may only read verified institutions.
+    match /institutions/{institutionId} {
+      allow get, list: if isSignedIn() && resource.data.verification_status == 'verified';
+      allow create: if isOwner(request.resource.data.admin_id) && request.resource.data.verification_status == 'pending' && request.resource.data.verified == false;
+      allow update: if isAdmin() || (isOwner(resource.data.admin_id) && resource.data.verification_status == 'pending');
+    }
+
+    match /institution_verification_requests/{requestId} {
+      allow create: if isSignedIn() && request.resource.data.owner_uid == request.auth.uid && request.resource.data.verification_status == 'pending';
+      allow get: if isOwner(resource.data.owner_uid) || isAdmin();
+      allow update: if isAdmin();
+      allow list: if isAdmin();
+    }
+
+    match /institution_payment_intents/{intentId} {
+      allow create: if isSignedIn() && request.resource.data.payer_uid == request.auth.uid && request.resource.data.status == 'pending';
+      allow get: if isSignedIn() && (resource.data.payer_uid == request.auth.uid || isAdmin());
+      allow list: if isAdmin();
+      allow update: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "StudySnap Pro: AI Learning DNA",
+  "description": "The ultimate AI-powered academic platform with real-time live voice conversation AI, collaboration, digital learning twins, and deep reasoning.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Professional user profile data encompassing roles, stats, and preferences.",
+      "type": "object",
+      "properties": {
+        "user_name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "age_group": { "type": "string", "enum": ["baby", "kid", "teen", "adult"] },
+        "role": { "type": "string", "enum": ["student", "teacher", "lecturer", "researcher", "admin"] },
+        "reputation_score": { "type": "number" },
+        "reputation_level": { "type": "string" },
+        "personal_venues": { "type": "array", "items": { "type": "string" } },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_name", "email", "age_group", "role"]
+    },
+    "Subject": {
+      "title": "Academic Subject",
+      "description": "Categories for organizing notes and study materials.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "owner_id": { "type": "string" },
+        "name": { "type": "string" },
+        "color": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "owner_id", "name", "color"]
+    },
+    "Note": {
+      "title": "Study Note",
+      "description": "Rich text study notes with AI-generated summaries.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "owner_id": { "type": "string" },
+        "subject_id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "summary": { "type": "string" },
+        "is_favorite": { "type": "boolean" },
+        "is_locked": { "type": "boolean" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "owner_id", "subject_id", "title", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profiles"
+    },
+    "/subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Academic subjects owned by users"
+    },
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Study notes owned by users"
+    }
+  }
+}
