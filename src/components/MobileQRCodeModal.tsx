@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { QrCode, X, Copy, Check, Smartphone, ExternalLink, ShieldCheck } from 'lucide-react';
-import { useScrollLock } from '../lib/useScrollLock';
 
 interface MobileQRCodeModalProps {
   isOpen: boolean;
@@ -11,7 +10,6 @@ interface MobileQRCodeModalProps {
 
 export const MobileQRCodeModal: React.FC<MobileQRCodeModalProps> = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false);
-  useScrollLock(isOpen);
   const getAppUrl = () => {
     if (typeof window !== 'undefined' && window.location.origin && !window.location.origin.includes('localhost:3000')) {
       return window.location.origin;
@@ -93,7 +91,7 @@ export const MobileQRCodeModal: React.FC<MobileQRCodeModalProps> = ({ isOpen, on
             href={appUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full mt-3 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2"
+            className="w-full mt-3 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-98 transition-all"
           >
             <ExternalLink size={16} />
             Open Shared App URL

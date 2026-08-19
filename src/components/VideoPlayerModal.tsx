@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ExternalLink, ShieldCheck, Sparkles, CheckCircle2, Bookmark, Share2 } from 'lucide-react';
 import { YouTubeVideo } from '../services/youtube';
-import { useScrollLock } from '../lib/useScrollLock';
 
 interface VideoPlayerModalProps {
   video: YouTubeVideo | null;
@@ -13,8 +12,6 @@ interface VideoPlayerModalProps {
 export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClose, onTakeNote }) => {
   const [quickNote, setQuickNote] = useState('');
   const [savedNote, setSavedNote] = useState(false);
-
-  useScrollLock(!!video);
 
   if (!video) return null;
 
