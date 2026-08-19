@@ -157,3 +157,66 @@
   }
 }
 
+
+/*
+ * Standalone feature mobile scroll policy.
+ *
+ * The application shell owns the page scroll on mobile.
+ * Feature workspaces must therefore expand with their content instead
+ * of creating a second viewport-sized scroll container.
+ *
+ * Bounded scrolling remains valid for dialogs, previews, and other
+ * explicitly contained surfaces.
+ */
+@media (max-width: 767px) {
+  /*
+   * Live Classroom
+   */
+  .studysnap-main > .live-classroom,
+  .studysnap-main > [data-feature="live-classroom"] {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /*
+   * Generic flex/grid feature workspaces.
+   * These rules only target elements explicitly marked by the
+   * application-level feature workspace classes.
+   */
+  .feature-workspace,
+  .feature-workspace-scroll {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  /*
+   * Standalone feature roots using viewport-height utility classes.
+   * Prevent them from establishing a second viewport.
+   */
+  .studysnap-main .min-h-screen,
+  .studysnap-main .h-screen,
+  .studysnap-main .min-h-\[100dvh\],
+  .studysnap-main .min-h-\[100svh\] {
+    min-height: 0 !important;
+  }
+
+  /*
+   * Flex workspaces inside standalone features.
+   * Allow their content to determine height on mobile.
+   */
+  .studysnap-main .flex-1.overflow-hidden,
+  .studysnap-main .flex-1.overflow-y-auto,
+  .studysnap-main .flex-1.overflow-auto {
+    flex: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
