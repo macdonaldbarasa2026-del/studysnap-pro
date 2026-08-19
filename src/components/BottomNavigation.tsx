@@ -1,4 +1,5 @@
 import React from 'react';
+import '../mobile-layout-fixes.css';
 import { MessageSquare, LayoutDashboard, Settings, Search, Sparkles, Menu, Plus, MoreHorizontal } from 'lucide-react';
 
 interface BottomNavigationProps {

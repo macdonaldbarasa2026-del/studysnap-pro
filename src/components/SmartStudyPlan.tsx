@@ -25,7 +25,7 @@ export const SmartStudyPlan: React.FC<SmartStudyPlanProps> = ({ subjects, stats,
 
   return (
     <section className="mb-10 sm:mb-12" aria-labelledby="smart-plan-title">
-      <div className="reference-card p-5 sm:p-7 bg-app-card border-app-border shadow-sm">
+      <div className="p-5 sm:p-7 bg-app-card border border-app-border shadow-sm rounded-[28px]">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
           <div>
             <div className="flex items-center gap-2 text-app-accent text-[10px] font-black uppercase tracking-[0.22em]"><Sparkles size={14} /> Smart Study Plan</div>

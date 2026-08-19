@@ -1,0 +1,104 @@
+/* StudySnap mobile layout hardening.
+   Keep one page scroll owner, dock primary navigation to the viewport edge,
+   and remove duplicate mobile workspace controls. */
+@media (max-width: 767px) {
+  /* The bottom tabs are a true navigation dock, not a floating card. */
+  .responsive-nav {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -8px 28px rgba(15, 23, 42, .16) !important;
+    padding-bottom: var(--safe-bottom) !important;
+    background: color-mix(in srgb, var(--app-card) 97%, transparent) !important;
+  }
+
+  /* The bottom dock is the single mobile entry point for the More menu.
+     The hamburger in the topbar was the same action duplicated. */
+  .mobile-menu-trigger { display: none !important; }
+  .home-quick-actions-more { display: none !important; }
+
+  /* Reserve enough physical layout space for the dock. */
+  .studysnap-content {
+    padding-bottom: calc(92px + var(--safe-bottom)) !important;
+  }
+
+  /* Prevent view roots from creating a second viewport-sized scroll surface. */
+  .studysnap-main > .voice-tutor,
+  .studysnap-main > .studysnap-profile-view {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Voice Tutor owns no page-level scroll on phones; the app shell does. */
+  .voice-tutor > main {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    flex: none !important;
+  }
+
+  /* Transcript is intentionally an internal scroll surface because it is a
+     content list, not the page itself. */
+  .voice-tutor .voice-transcript-scroll {
+    max-height: 48vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Smart Study Plan used a legacy white reference-card skin, which became
+   unreadable in Midnight/Dark themes. Let the app theme own its surface. */
+.theme-midnight .reference-card,
+.theme-black .reference-card,
+.theme-dark .reference-card,
+.theme-oled .reference-card {
+  background: var(--app-card) !important;
+  border-color: var(--app-border) !important;
+  color: var(--app-text);
+  box-shadow: 0 16px 40px -28px rgba(0,0,0,.55);
+}
+
+/* Academic Profile had a legacy white-only skin. Scope the correction so the
+   profile follows the selected StudySnap theme instead of forcing a light page. */
+.theme-midnight .studysnap-profile-view,
+.theme-black .studysnap-profile-view,
+.theme-dark .studysnap-profile-view,
+.theme-oled .studysnap-profile-view {
+  background: var(--app-bg) !important;
+  color: var(--app-text);
+}
+
+.theme-midnight .studysnap-profile-view :where(.bg-white, .bg-white\/95, .bg-white\/90),
+.theme-black .studysnap-profile-view :where(.bg-white, .bg-white\/95, .bg-white\/90),
+.theme-dark .studysnap-profile-view :where(.bg-white, .bg-white\/95, .bg-white\/90),
+.theme-oled .studysnap-profile-view :where(.bg-white, .bg-white\/95, .bg-white\/90) {
+  background-color: var(--app-card) !important;
+}
+
+.theme-midnight .studysnap-profile-view :where(.text-slate-900, .text-slate-800),
+.theme-black .studysnap-profile-view :where(.text-slate-900, .text-slate-800),
+.theme-dark .studysnap-profile-view :where(.text-slate-900, .text-slate-800),
+.theme-oled .studysnap-profile-view :where(.text-slate-900, .text-slate-800) {
+  color: var(--app-text) !important;
+}
+
+.theme-midnight .studysnap-profile-view :where(.text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400),
+.theme-black .studysnap-profile-view :where(.text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400),
+.theme-dark .studysnap-profile-view :where(.text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400),
+.theme-oled .studysnap-profile-view :where(.text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400) {
+  color: var(--app-text-muted) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .responsive-nav { scroll-behavior: auto; }
+}

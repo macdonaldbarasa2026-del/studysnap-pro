@@ -363,7 +363,7 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
       <section className="mt-6" aria-labelledby="quick-actions-title">
         <div className="home-section-heading">
           <div><p className="text-xs font-semibold text-app-text-muted">Quick actions</p><h2 id="quick-actions-title">Start something</h2></div>
-          <button type="button" className="home-text-button" onClick={onMenuOpen}><MoreHorizontal size={15} /> More</button>
+          <button type="button" className="home-text-button home-quick-actions-more" onClick={onMenuOpen}><MoreHorizontal size={15} /> More</button>
         </div>
         <div className="home-action-grid">
           {visiblePrimaryActions.map((action) => (

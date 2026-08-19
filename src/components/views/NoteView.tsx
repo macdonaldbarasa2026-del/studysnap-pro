@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Star, Layers, Brain, Search, Maximize2, Minimize2, Volume2, VolumeX, Lock, Unlock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Note } from '../../types';
+import { Note, UserProfile } from '../../types';
 import { playAiVoice, stopAiVoice } from '../../lib/speech';
 import { TopicVideoShelf } from '../TopicVideoShelf';
 
@@ -15,6 +15,7 @@ interface NoteViewProps {
   setIsFlipped: (isFlipped: boolean) => void;
   startQuiz: (note: Note) => void;
   handleResearch: (query: string) => void;
+  userProfile?: UserProfile | null;
 }
 
 export const NoteView: React.FC<NoteViewProps> = ({
@@ -27,20 +28,39 @@ export const NoteView: React.FC<NoteViewProps> = ({
   setIsFlipped,
   startQuiz,
   handleResearch,
+  userProfile,
 }) => {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isReading, setIsReading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [showLockOverlay, setShowLockOverlay] = useState(selectedNote?.is_locked || false);
   const [pin, setPin] = useState('');
+  const [unlockError, setUnlockError] = useState('');
+  // parental_pin can be 4-6 digits (see ParentMode); the keypad must accept
+  // up to that many digits or a longer PIN could never be typed in here.
+  const pinMaxLength = userProfile?.parental_pin?.length && userProfile.parental_pin.length >= 4 && userProfile.parental_pin.length <= 6
+    ? userProfile.parental_pin.length
+    : 4;
 
   const handleUnlock = () => {
-    // Locked notes must be unlocked by the configured owner PIN.
-    if (pin.length >= 4) {
+    // Locked notes must be unlocked by the configured owner (parental) PIN.
+    // Previously this only checked that 4+ digits had been typed, so any
+    // 4-digit number - not the real PIN - would unlock a locked note. Now we
+    // compare against the actual configured parental_pin.
+    const correctPin = userProfile?.parental_pin;
+    if (!correctPin) {
+      // No PIN has been configured yet, so there is nothing to unlock against.
+      setUnlockError('No parental PIN is set up yet. Set one up in Parent Mode first.');
+      setPin('');
+      return;
+    }
+    if (pin === correctPin) {
       setShowLockOverlay(false);
       setPin('');
+      setUnlockError('');
     } else {
-      // In a real app, we'd show an error toast
+      setUnlockError('Incorrect PIN. Please try again.');
+      setPin('');
     }
   };
 
@@ -165,8 +185,10 @@ export const NoteView: React.FC<NoteViewProps> = ({
             <h3 className="text-2xl font-black text-app-text mb-2">Note Locked</h3>
             <p className="text-app-text-muted font-bold mb-8 uppercase tracking-widest text-xs">Enter parental pin to view</p>
             
+            {unlockError && <p className="text-rose-600 text-sm font-bold mb-4">{unlockError}</p>}
+
             <div className="flex gap-3 mb-8">
-              {[1, 2, 3, 4].map((_, i) => (
+              {Array.from({ length: pinMaxLength }).map((_, i) => (
                 <div key={i} className={`w-4 h-4 rounded-full border-2 border-rose-200 ${pin.length > i ? 'bg-rose-600 border-rose-600' : ''}`} />
               ))}
             </div>
@@ -180,7 +202,7 @@ export const NoteView: React.FC<NoteViewProps> = ({
                   onClick={() => {
                     if (num === 'C') setPin('');
                     else if (num === '✓') handleUnlock();
-                    else if (pin.length < 4) setPin(prev => prev + num);
+                    else if (pin.length < pinMaxLength) setPin(prev => prev + num);
                   }}
                   className="w-16 h-16 rounded-2xl bg-white border border-app-border flex items-center justify-center text-xl font-black text-app-text shadow-sm"
                 >

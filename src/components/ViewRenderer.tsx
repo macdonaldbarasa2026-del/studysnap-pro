@@ -469,6 +469,7 @@ export const ViewRenderer: React.FC<ViewRendererProps> = (props) => {
             setIsFlipped={setIsFlipped}
             startQuiz={startQuiz}
             handleResearch={handleResearch}
+            userProfile={userProfile}
           />
         </motion.div>}
 
