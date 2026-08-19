@@ -167,7 +167,7 @@ export const AcademicProfileView: React.FC<AcademicProfileViewProps> = ({ userPr
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="studysnap-profile-view min-h-screen bg-white flex flex-col">
       {/* WhatsApp Style Header */}
       <header className="p-6 bg-white border-b border-slate-100 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-4">

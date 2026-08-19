@@ -52,6 +52,14 @@ export const ParentMode: React.FC<ParentModeProps> = ({ userProfile, stats, onBa
     onUpdatePermissions(canGoLive, avatarFilter);
   }, [canGoLive, avatarFilter]);
 
+  // The stored PIN can be 4-6 digits (see handleSetupPin/handleChangePin below).
+  // The unlock keypad must accept up to that length, or anyone who chose a 5-
+  // or 6-digit PIN would be permanently unable to type enough digits to log
+  // back in.
+  const pinMaxLength = userProfile?.parental_pin?.length && userProfile.parental_pin.length >= 4 && userProfile.parental_pin.length <= 6
+    ? userProfile.parental_pin.length
+    : 6;
+
   const handleUnlock = () => {
     const correctPin = userProfile?.parental_pin;
     if (!correctPin) {
@@ -185,14 +193,14 @@ export const ParentMode: React.FC<ParentModeProps> = ({ userProfile, stats, onBa
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Parental Access</h2>
           <p className="text-slate-400 mb-8 leading-relaxed">
-            Enter your 4-digit PIN to access the Parent & Guardian dashboard.
+            Enter your PIN to access the Parent & Guardian dashboard.
           </p>
           
-          <div className="flex justify-center gap-4 mb-8">
-            {[0, 1, 2, 3].map(i => (
+          <div className="flex justify-center gap-3 mb-8">
+            {Array.from({ length: pinMaxLength }).map((_, i) => (
               <div 
                 key={i}
-                className={`w-12 h-16 rounded-2xl border-2 flex items-center justify-center text-2xl font-bold transition-all ${pin.length > i ? 'border-indigo-500 bg-indigo-500/10 text-white' : 'border-white/10 bg-white/5 text-slate-600'}`}
+                className={`w-10 h-14 rounded-2xl border-2 flex items-center justify-center text-2xl font-bold transition-all ${pin.length > i ? 'border-indigo-500 bg-indigo-500/10 text-white' : 'border-white/10 bg-white/5 text-slate-600'}`}
               >
                 {pin.length > i ? '•' : ''}
               </div>
@@ -208,7 +216,7 @@ export const ParentMode: React.FC<ParentModeProps> = ({ userProfile, stats, onBa
                 onClick={() => {
                   if (num === 'C') setPin('');
                   else if (num === 'OK') handleUnlock();
-                  else if (pin.length < 4) setPin(prev => prev + num);
+                  else if (pin.length < pinMaxLength) setPin(prev => prev + num);
                 }}
                 className={`h-16 rounded-2xl font-bold text-xl transition-all active:scale-95 ${num === 'OK' ? 'bg-indigo-600 text-white col-span-1' : 'bg-white/5 text-white hover:bg-white/10'}`}
               >

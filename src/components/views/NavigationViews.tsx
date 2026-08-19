@@ -133,10 +133,19 @@ const Composer = ({ value, onChange, onSend, placeholder, replyTo, onCancelReply
   </div>
 );
 
-const MessageBubble = ({ msg, own, onReply, onCopy, onReport, onReact }: { msg: MessageItem; own: boolean; onReply?: () => void; onCopy?: () => void; onReport?: () => void; onReact?: () => void }) => (
+const MessageBubble = ({ msg, own, onReply, onCopy, onReport, onReact }: { msg: MessageItem; own: boolean; onReply?: () => void; onCopy?: () => void; onReport?: () => void; onReact?: () => void }) => {
+  // The action row (Reply/Copy/React/Report) used to only appear on
+  // `:hover`, which never fires on touch screens. That made these actions
+  // completely unreachable on phones/tablets. We now also toggle it on tap,
+  // and only fall back to hover as a bonus for mouse users.
+  const [actionsOpen, setActionsOpen] = React.useState(false);
+  return (
   <div className={`flex ${own ? 'justify-end' : 'justify-start'}`}>
     <div className="group max-w-[92%] sm:max-w-[72%]">
-      <div className={`relative rounded-3xl px-4 py-3 shadow-sm ${own ? 'bg-app-accent text-white rounded-br-lg' : 'bg-app-card border border-app-border text-app-text rounded-bl-lg'}`}>
+      <div
+        className={`relative rounded-3xl px-4 py-3 shadow-sm ${own ? 'bg-app-accent text-white rounded-br-lg' : 'bg-app-card border border-app-border text-app-text rounded-bl-lg'}`}
+        onClick={() => setActionsOpen(v => !v)}
+      >
         {!own && <p className="text-[10px] font-black text-app-accent mb-1">{msg.sender_name}</p>}
         {msg.reply_to && <div className={`mb-2 rounded-xl px-3 py-2 text-xs ${own ? 'bg-white/10' : 'bg-app-bg border border-app-border'}`}><p className="font-bold">{msg.reply_to.sender_name}</p><p className="opacity-70 truncate">{msg.reply_to.text}</p></div>}
         {msg.attachment?.previewUrl && <img src={msg.attachment.previewUrl} alt={msg.attachment.name} className="mb-2 max-h-72 w-full rounded-2xl object-cover"/>}
@@ -144,16 +153,17 @@ const MessageBubble = ({ msg, own, onReply, onCopy, onReport, onReact }: { msg: 
         <div className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${own ? 'text-white/65' : 'text-app-text-muted'}`}>
           <span>{formatTime(msg.created_at)}</span>{own && <CheckCheck size={12} />}
         </div>
-        <div className={`absolute -bottom-9 ${own ? 'right-0' : 'left-0'} hidden group-hover:flex items-center gap-1 rounded-xl border border-app-border bg-app-card shadow-lg p-1 z-10`}>
-          {onReply && <button type="button" aria-label="Reply" title="Reply" onClick={onReply} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Reply size={14}/></button>}
-          {onCopy && <button type="button" aria-label="Copy message" title="Copy" onClick={onCopy} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Copy size={14}/></button>}
-          {onReact && <button type="button" aria-label="React" title="React" onClick={onReact} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Smile size={14}/></button>}
-          {!own && onReport && <button type="button" aria-label="Report message" title="Report" onClick={onReport} className="w-8 h-8 rounded-lg hover:bg-red-50 text-red-500"><Flag size={14}/></button>}
+        <div className={`absolute -bottom-9 ${own ? 'right-0' : 'left-0'} ${actionsOpen ? 'flex' : 'hidden'} group-hover:flex items-center gap-1 rounded-xl border border-app-border bg-app-card shadow-lg p-1 z-10`}>
+          {onReply && <button type="button" aria-label="Reply" title="Reply" onClick={(e) => { e.stopPropagation(); onReply(); setActionsOpen(false); }} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Reply size={14}/></button>}
+          {onCopy && <button type="button" aria-label="Copy message" title="Copy" onClick={(e) => { e.stopPropagation(); onCopy(); setActionsOpen(false); }} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Copy size={14}/></button>}
+          {onReact && <button type="button" aria-label="React" title="React" onClick={(e) => { e.stopPropagation(); onReact(); setActionsOpen(false); }} className="w-8 h-8 rounded-lg hover:bg-app-bg text-app-text-muted"><Smile size={14}/></button>}
+          {!own && onReport && <button type="button" aria-label="Report message" title="Report" onClick={(e) => { e.stopPropagation(); onReport(); setActionsOpen(false); }} className="w-8 h-8 rounded-lg hover:bg-red-50 text-red-500"><Flag size={14}/></button>}
         </div>
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const useRealtimeRoom = (roomId: string | null, onMessage: (message: MessageItem) => void) => {
   const socketRef = React.useRef<Socket | null>(null);

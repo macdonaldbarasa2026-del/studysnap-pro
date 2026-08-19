@@ -740,7 +740,7 @@ export const VoiceTutor: React.FC<VoiceTutorProps> = ({ userName, onBack, addToa
   }, [stopScheduledAudio]);
 
   return (
-    <div className="voice-tutor reference-shell h-[100dvh] overflow-hidden text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-10">
+    <div className="voice-tutor reference-shell text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-10">
       {/* Top Header */}
       <header className="px-6 py-5 border-b border-white/70 bg-white/80 backdrop-blur-xl flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
@@ -920,7 +920,7 @@ export const VoiceTutor: React.FC<VoiceTutorProps> = ({ userName, onBack, addToa
       </AnimatePresence>
 
       {/* Main Interactive Stage */}
-      <main className="flex-1 min-h-0 overflow-y-auto max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-6 flex flex-col items-center">
+      <main className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-6 flex flex-col items-center">
         
         <section className="w-full max-w-2xl mb-4 rounded-3xl border border-indigo-100 bg-white/85 shadow-sm p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">

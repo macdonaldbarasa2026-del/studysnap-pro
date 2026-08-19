@@ -46,7 +46,7 @@ import {
 import { UserProfile, View, Subject, FocusStats, Theme } from '../types';
 import { SmartStudyPlan } from './SmartStudyPlan';
 import { LearningPathPanel } from './LearningPathPanel';
-import { canUseCapability, getModeDescription } from '../lib/featurePolicy';
+import { canUseCapability, canUseView, getModeDescription } from '../lib/featurePolicy';
 
 interface AdaptiveHomeProps {
   userProfile: UserProfile | null;
@@ -363,7 +363,7 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
       <section className="mt-6" aria-labelledby="quick-actions-title">
         <div className="home-section-heading">
           <div><p className="text-xs font-semibold text-app-text-muted">Quick actions</p><h2 id="quick-actions-title">Start something</h2></div>
-          <button type="button" className="home-text-button" onClick={onOpenMenu}><MoreHorizontal size={15} /> More</button>
+          <button type="button" className="home-text-button home-quick-actions-more" onClick={onMenuOpen}><MoreHorizontal size={15} /> More</button>
         </div>
         <div className="home-action-grid">
           {visiblePrimaryActions.map((action) => (
@@ -400,7 +400,7 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
         </section>
       )}
 
-      <button type="button" onClick={onOpenMenu} className="home-tools-link mt-6">
+      <button type="button" onClick={onMenuOpen} className="home-tools-link mt-6">
         <span><MoreHorizontal size={18} /> Explore all StudySnap tools</span><ChevronRight size={17} />
       </button>
     </div>
