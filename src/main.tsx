@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary';
 import './index.css';
+import './mobile-layout-fixes.css';
 
 // Capture the browser's install prompt as early as possible. Chromium can fire
 // beforeinstallprompt before React effects are attached, so the app must not

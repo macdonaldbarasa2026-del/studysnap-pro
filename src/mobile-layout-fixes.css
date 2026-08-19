@@ -102,3 +102,58 @@
 @media (prefers-reduced-motion: reduce) {
   .responsive-nav { scroll-behavior: auto; }
 }
+
+/* Global mobile single-scroll-owner policy.
+   Standalone StudySnap features must expand naturally into the page scroll.
+   Internal scrolling is reserved for explicit modal/dialog surfaces. */
+@media (max-width: 767px) {
+  .studysnap-app-shell {
+    height: auto !important;
+    min-height: 100svh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .studysnap-main {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  .studysnap-main :where(
+    [class*="overflow-y-auto"],
+    [class*="overflow-y-scroll"],
+    [class*="overflow-auto"],
+    [class*="overflow-scroll"]
+  ):not([role="dialog"]):not(.allow-mobile-scroll) {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+    -webkit-overflow-scrolling: auto !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  .studysnap-main :where(
+    .feature-workspace,
+    .feature-workspace-scroll,
+    .voice-tutor,
+    .voice-tutor > main,
+    .voice-transcript-scroll
+  ) {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+  }
+
+  .studysnap-main > * {
+    min-width: 0;
+  }
+}
+
