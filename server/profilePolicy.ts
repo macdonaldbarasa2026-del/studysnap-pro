@@ -10,6 +10,15 @@ export interface TrustedProfile {
   parental_lock?: boolean;
 }
 
+declare global {
+  namespace Express {
+    interface Request {
+      studySnapProfile?: TrustedProfile;
+      studySnapChildSafe?: boolean;
+    }
+  }
+}
+
 const CHILD_BLOCKED_AI = new Set([
   '/maps-grounding',
   '/generate-video',

@@ -37,6 +37,7 @@ import {
   transcribeAudioWithGemini, 
   getHighThinkingReasoning, 
   sendGeminiChatMessage, 
+  performWebSearch,
   
   mapsGroundingWithGemini, 
   startVeoVideoGeneration, 
@@ -258,7 +259,7 @@ export const GeminiMultimodalStudio: React.FC<GeminiMultimodalStudioProps> = ({ 
     setIsGroundingLoading(true);
     try {
       if (groundingMode === 'search') {
-        const res = await searchGroundingWithGemini(groundingQuery);
+        const res = await performWebSearch(groundingQuery);
         setGroundingResult(res);
         addToast("Web search context loaded.", "success");
       } else {

@@ -1,6 +1,6 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { getGemini } from './geminiService';
-import { Modality, LiveServerMessage } from '@google/genai';
+import { Modality, LiveServerMessage, Type } from '@google/genai';
 import admin from 'firebase-admin';
 
 const ALLOWED_VOICES = new Set(['Zephyr', 'Kore', 'Puck', 'Charon', 'Fenrir', 'Aoede']);
@@ -71,10 +71,10 @@ Provide concise, clear spoken explanations and yield immediately when the learne
               name: 'control_app',
               description: 'Navigate to a StudySnap view.',
               parameters: {
-                type: 'OBJECT',
+                type: Type.OBJECT,
                 properties: {
-                  action: { type: 'STRING', description: 'The action to perform.' },
-                  view: { type: 'STRING', description: 'The target StudySnap view identifier.' }
+                  action: { type: Type.STRING, description: 'The action to perform.' },
+                  view: { type: Type.STRING, description: 'The target StudySnap view identifier.' }
                 },
                 required: ['action', 'view']
               }

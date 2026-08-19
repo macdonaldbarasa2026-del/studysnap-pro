@@ -601,6 +601,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (hover: none) and (pointer: coarse), (max-width: 767px) {
   html { scroll-padding-top: calc(64px + var(--safe-top)); scroll-padding-bottom: calc(92px + var(--safe-bottom)); }
   body { min-height: 100svh; }
+  .studysnap-app-shell { height: auto !important; min-height: 100svh !important; overflow: visible !important; }
   .studysnap-main { overflow: visible !important; height: auto !important; max-height: none !important; }
   .feature-workspace { min-height: auto !important; max-height: none !important; overflow: visible !important; }
   .feature-workspace-scroll { min-height: 0 !important; max-height: none !important; height: auto !important; overflow: visible !important; overscroll-behavior: auto !important; scrollbar-gutter: auto !important; }
