@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Palette, ArrowRight, FileText, CheckCircle2, Baby, Users, Clock, Volume2, Lock as LockIcon, LogOut, Zap, Download, ShieldCheck, Gauge, Play, Square, QrCode } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Palette, ArrowRight, FileText, CheckCircle2, Baby, Users, Clock, Volume2, Lock as LockIcon, LogOut, Zap, Download, ShieldCheck, Gauge, Play, Square, QrCode, Settings, Star, Video, Calendar, Bell, HelpCircle } from 'lucide-react';
 import { AgeGroup, UserProfile, Theme } from '../../types';
 import { hapticClick } from '../../lib/haptics';
 import { NeuralEngine } from '../../lib/neural_engine';
@@ -516,7 +516,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   setNotificationsEnabled
 }) => {
   return (
-    <div className="flex flex-col h-screen bg-app-bg pb-[var(--safe-bottom)]">
+    <div className="feature-workspace flex flex-col min-h-[100dvh] bg-app-bg pb-[var(--safe-bottom)]">
       <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-app-card border-b border-app-border">
         <div className="flex items-center gap-3">
           <button onClick={() => setView('home')} className="text-app-text">
@@ -525,16 +525,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <h1 className="text-lg font-bold text-app-text">Menu</h1>
         </div>
         <div className="flex items-center gap-3">
-           <button className="text-app-text">
+           <button onClick={() => setIsThemePickerOpen(true)} className="rounded-xl p-2 text-app-text hover:bg-app-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent" aria-label="Change appearance">
               <Settings size={24} />
            </button>
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto">
+      <main className="feature-workspace-scroll flex-1">
         {/* Profile Header */}
         <div className="p-4 flex items-center justify-between">
-           <div className="flex items-center gap-4">
+           <button onClick={() => setView('academic-profile')} className="flex items-center gap-4 rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent">
               <div className="w-16 h-16 rounded-full bg-app-accent flex items-center justify-center text-white text-2xl font-bold">
                  {(userProfile?.user_name || 'S').slice(0, 1).toUpperCase()}
               </div>
@@ -542,8 +542,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                  <h2 className="text-lg font-bold text-app-text">{userProfile?.user_name}</h2>
                  <p className="text-sm text-app-text-muted">View profile</p>
               </div>
-           </div>
-           <ChevronRight size={20} className="text-app-text-muted" />
+           </button>
+           <button onClick={() => setView('academic-profile')} className="rounded-xl p-2 text-app-text-muted hover:bg-app-bg" aria-label="Open profile"><ChevronRight size={20} /></button>
         </div>
 
         {/* Action Grid */}
@@ -558,8 +558,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         <div className="mt-4 border-t border-app-border">
            <SettingsRow icon={<Palette size={20} />} label="Appearance" onClick={() => setIsThemePickerOpen(true)} />
-           <SettingsRow icon={<Bell size={20} />} label="Notifications" onClick={() => {}} />
-           <SettingsRow icon={<LockIcon size={20} />} label="Privacy" onClick={() => {}} />
+           <SettingsRow icon={<Bell size={20} />} label={notificationsEnabled ? 'Study reminders on' : 'Study reminders off'} onClick={() => setNotificationsEnabled(!notificationsEnabled)} />
+           <SettingsRow icon={<LockIcon size={20} />} label="Privacy & safety" onClick={() => setView('policies')} />
            <SettingsRow icon={<HelpCircle size={20} />} label="Help & Support" onClick={() => setView('help')} />
         </div>
 

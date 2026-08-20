@@ -418,7 +418,7 @@ export const ViewRenderer: React.FC<ViewRendererProps> = (props) => {
         )}
 
         {view === 'kids-learning' && <motion.div key="kids-learning" {...getAnimationConfig()}><KidsLearning onBack={goBack} /></motion.div>}
-        {view === 'videos' && <motion.div key="videos" {...getAnimationConfig()}><VideosHub age={userProfile?.age_group === 'baby' ? 'baby' : 'kid'} onBack={goBack} /></motion.div>}
+        {view === 'videos' && <motion.div key="videos" {...getAnimationConfig()}><VideosHub age={userProfile?.age_group ?? 'kid'} onBack={goBack} onCreate={() => setView('scanner')} /></motion.div>}
         {view === 'scanner' && <motion.div key="scanner" {...getAnimationConfig()}><Scanner onCapture={props.handleCapture ?? (() => {})} onClose={goBack} /></motion.div>}
         {view === 'early-learning' && (
           <motion.div
@@ -454,6 +454,7 @@ export const ViewRenderer: React.FC<ViewRendererProps> = (props) => {
             selectedSubject={selectedSubject}
             notes={notes}
             setView={setView}
+            onBack={goBack}
             setSelectedNote={setSelectedNote}
           />
         </motion.div>}

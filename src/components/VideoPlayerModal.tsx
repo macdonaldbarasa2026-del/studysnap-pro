@@ -16,10 +16,8 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
   if (!video) return null;
 
   const handleSaveNote = () => {
-    if (!quickNote.trim()) return;
-    if (onTakeNote) {
-      onTakeNote(`[Video Note: ${video.title}]\n${quickNote}`);
-    }
+    if (!quickNote.trim() || !onTakeNote) return;
+    onTakeNote(`[Video Note: ${video.title}]\n${quickNote}`);
     setSavedNote(true);
     setTimeout(() => setSavedNote(false), 2500);
   };
@@ -69,7 +67,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
               <a
                 href={`https://www.youtube.com/watch?v=${video.videoId}`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 transition-colors"
                 title="Watch on YouTube"
               >
@@ -92,6 +90,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
               src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0&modestbranding=1`}
               title={video.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />
           </div>
@@ -104,8 +103,8 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
               </p>
             )}
 
-            {/* Quick Study Note Pad */}
-            <div className="pt-3 border-t border-neutral-800 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            {/* Only offer note saving when the caller supplied a real destination. */}
+            {onTakeNote && <div className="pt-3 border-t border-neutral-800 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
               <input
                 type="text"
                 value={quickNote}
@@ -128,7 +127,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ video, onClo
                 {savedNote ? <CheckCircle2 size={16} /> : <Bookmark size={16} />}
                 {savedNote ? 'Saved!' : 'Save Note'}
               </button>
-            </div>
+            </div>}
           </div>
         </motion.div>
       </motion.div>

@@ -8,12 +8,10 @@ import {
   Plus, 
   Users, 
   Baby, 
-  ArrowRight, 
   Zap, 
   Presentation, 
   Building2, 
   Clock, 
-  Star, 
   Palette, 
   Menu, 
   Timer, 
@@ -40,7 +38,6 @@ import {
   Radio,
   Gamepad2,
   MoreHorizontal,
-  MessageSquare,
   Camera as CameraIcon
 } from 'lucide-react';
 import { UserProfile, View, Subject, FocusStats, Theme } from '../types';
@@ -77,8 +74,13 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
   const isRetro = (themeName as string) === 'retro';
 
   useEffect(() => {
-    const stats = JSON.parse(localStorage.getItem('studysnap-activity-stats') || '{}');
-    setActivityStats(stats);
+    try {
+      const stored = JSON.parse(localStorage.getItem('studysnap-activity-stats') || '{}');
+      setActivityStats(stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {});
+    } catch {
+      // Corrupt local data should never prevent Home from opening.
+      setActivityStats({});
+    }
   }, []);
 
   const ageGroup = userProfile?.age_group || 'adult';
@@ -316,7 +318,7 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
       </header>
 
                   <section className="mt-4 px-4 overflow-hidden">
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2" data-horizontal-scroller="carousel" aria-label="Your learning areas">
           <button onClick={onAddSubject} className="flex flex-col items-center gap-1 shrink-0">
             <div className="relative">
               <div className="w-16 h-16 rounded-full border-2 border-app-border flex items-center justify-center text-app-text bg-app-card">
@@ -361,21 +363,15 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
                  <div className="text-center p-8">
                     <Sparkles size={48} className="mx-auto mb-4 opacity-20" />
                     <p className="text-sm font-medium">No recent activity in {subject.name}</p>
-                    <button onClick={() => onSelectSubject(subject)} className="mt-4 text-app-accent font-bold text-sm">View Learning Area</button>
+                    <p className="mt-4 text-xs text-app-text-muted">Open this area to add or review study material.</p>
                  </div>
               </div>
 
-              <div className="p-3 space-y-2">
-                <div className="flex items-center gap-4">
-                  <Star size={24} />
-                  <MessageSquare size={24} />
-                  <ArrowRight size={24} />
-                </div>
-                <div className="text-sm">
-                  <span className="font-bold text-app-text">{stats.notes} notes</span> organized in this area
-                </div>
-                <div className="text-[10px] text-app-text-muted uppercase tracking-wider">
-                  Updated just now
+              <div className="p-3 space-y-3">
+                <p className="text-sm"><span className="font-bold text-app-text">{stats.notes} notes</span> organized in this learning area</p>
+                <div className="flex gap-2">
+                  <button onClick={() => onSelectSubject(subject)} className="flex-1 rounded-lg border border-app-border px-3 py-2 text-sm font-bold text-app-text hover:bg-app-bg">Open area</button>
+                  <button onClick={() => onViewChange('scanner')} className="flex-1 rounded-lg bg-app-accent px-3 py-2 text-sm font-bold text-white hover:opacity-90">Add a note</button>
                 </div>
               </div>
            </div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { PlayCircle, RefreshCw, ShieldCheck, ExternalLink, Sparkles, Search, Music, HelpCircle, Star, Heart, Volume2 } from 'lucide-react';
+import { PlayCircle, RefreshCw, ShieldCheck, Sparkles, Search, Heart } from 'lucide-react';
 import { YouTubeVideo, getLearningVideos } from '../services/youtube';
-import { VideoPlayerModal } from './VideoPlayerModal';
 
 type Age = 'baby' | 'kid' | 'teen' | 'adult';
 
@@ -36,7 +35,37 @@ export const VideoShelf: React.FC<VideoShelfProps> = ({ age, topic = '', classNa
     { label: 'How It Works', query: 'how everyday things work for kids' },
   ];
 
-  const currentCategories = age === 'baby' ? babyCategories : kidCategories;
+  const teenCategories = [
+    { label: 'All', query: '' },
+    { label: 'Exam prep', query: 'exam revision study skills for teens' },
+    { label: 'Science', query: 'science concepts for high school students' },
+    { label: 'Math', query: 'math problem solving for high school' },
+    { label: 'Career skills', query: 'career exploration skills for teens' },
+  ];
+
+  const adultCategories = [
+    { label: 'All', query: '' },
+    { label: 'Study skills', query: 'evidence based study skills' },
+    { label: 'Research', query: 'academic research methods tutorial' },
+    { label: 'Professional skills', query: 'professional learning skills' },
+    { label: 'Wellbeing', query: 'healthy study habits and wellbeing' },
+  ];
+
+  const currentCategories = age === 'baby'
+    ? babyCategories
+    : age === 'kid'
+      ? kidCategories
+      : age === 'teen'
+        ? teenCategories
+        : adultCategories;
+  const isChildMode = age === 'baby' || age === 'kid';
+  const title = age === 'baby'
+    ? 'Baby & Toddler Video Fun'
+    : age === 'kid'
+      ? 'Kids Learning Video Zone'
+      : age === 'teen'
+        ? 'Teen Study Videos'
+        : 'Learning Videos';
 
   const load = async (queryTopic: string = searchTopic, categoryQuery: string = '') => {
     setLoading(true);
@@ -78,19 +107,17 @@ export const VideoShelf: React.FC<VideoShelfProps> = ({ age, topic = '', classNa
             {age === 'baby' ? <Heart size={22} className="fill-pink-400" /> : <Sparkles size={22} />}
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              {age === 'baby' ? 'Baby & Toddler Video Fun' : 'Kids Learning Video Zone'}
-            </h2>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{title}</h2>
             <p className="text-xs text-slate-500 dark:text-neutral-400">
-              Safe, curated educational videos with embed controls & zero ads.
+              {isChildMode ? 'Age-aware educational results with in-app playback controls.' : 'Educational videos selected for your learning mode.'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900">
-            <ShieldCheck size={14} /> SafeSearch Active
-          </div>
+          {isChildMode && <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900">
+            <ShieldCheck size={14} /> Age-aware search
+          </div>}
           <button
             onClick={() => load(searchTopic)}
             disabled={loading}
@@ -132,7 +159,8 @@ export const VideoShelf: React.FC<VideoShelfProps> = ({ age, topic = '', classNa
             type="text"
             value={searchTopic}
             onChange={(e) => setSearchTopic(e.target.value)}
-            placeholder={age === 'baby' ? 'Search songs or colors...' : 'Search animal facts, space, math...'}
+            maxLength={160}
+            placeholder={age === 'baby' ? 'Search songs or colors...' : age === 'kid' ? 'Search animal facts, space, math...' : age === 'teen' ? 'Search a subject or exam topic...' : 'Search a topic or learning skill...'}
             className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-sky-400"
           />
         </div>
@@ -153,6 +181,7 @@ export const VideoShelf: React.FC<VideoShelfProps> = ({ age, topic = '', classNa
               src={`https://www.youtube-nocookie.com/embed/${selected.videoId}?autoplay=1&rel=0&modestbranding=1`}
               title={selected.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />
           </div>

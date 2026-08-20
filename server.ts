@@ -1061,19 +1061,30 @@ async function startServer() {
   // 1. Learning Videos (for Baby, Kid, Teen, & Adult modes)
   app.get("/api/learning-videos", requireAuth, async (req, res) => {
     try {
-      const age = (req.query.age as string) || "kid";
-      const topic = (req.query.topic as string) || "";
-      const category = (req.query.category as string) || "";
-      const maxResults = parseInt(req.query.maxResults as string) || 8;
+      const requestedAge = typeof req.query.age === 'string' ? req.query.age : 'kid';
+      const age = ['baby', 'kid', 'teen', 'adult'].includes(requestedAge) ? requestedAge : 'kid';
+      const topic = typeof req.query.topic === 'string' ? req.query.topic.trim().slice(0, 160) : '';
+      const category = typeof req.query.category === 'string' ? req.query.category.trim().slice(0, 80) : '';
+      const requestedMax = Number.parseInt(String(req.query.maxResults), 10);
+      const maxResults = Number.isFinite(requestedMax) ? Math.min(Math.max(requestedMax, 1), 12) : 8;
 
+      // The search service has baby/kid/teen tiers; adult content uses the
+      // educational teen tier rather than falling back to children’s results.
       const ageTier = (age === 'baby' ? 'baby' : age === 'kid' ? 'kid' : 'teen') as any;
-      const query = topic || (age === 'baby' ? 'nursery rhymes counting songs colors' : 'science and math for kids');
+      const defaultQuery = age === 'baby'
+        ? 'nursery rhymes counting songs colors'
+        : age === 'kid'
+          ? 'science and math for kids'
+          : age === 'teen'
+            ? 'high school study skills science math'
+            : 'evidence based study skills and academic learning';
+      const query = topic || defaultQuery;
 
       const result = await searchYouTubeVideos({
         query,
         maxResults,
         ageTier,
-        categoryFilter: category || (age === 'baby' ? 'Early Learning' : 'Kids Science')
+        categoryFilter: category || (age === 'baby' ? 'Early Learning' : age === 'kid' ? 'Kids Science' : 'Educational')
       });
 
       res.json({ videos: result.videos, source: result.source, age, topic });
@@ -1086,10 +1097,12 @@ async function startServer() {
   // 2. Generic Educational Video Search (with safe-search)
   app.get("/api/youtube/search", requireAuth, async (req, res) => {
     try {
-      const query = (req.query.q as string) || "";
-      const ageTier = (req.query.ageTier as any) || "teen";
-      const maxResults = parseInt(req.query.maxResults as string) || 8;
-      const categoryFilter = (req.query.category as string) || "Educational";
+      const query = typeof req.query.q === 'string' ? req.query.q.trim().slice(0, 160) : '';
+      const requestedAgeTier = typeof req.query.ageTier === 'string' ? req.query.ageTier : 'teen';
+      const ageTier = (['baby', 'kid', 'teen'].includes(requestedAgeTier) ? requestedAgeTier : 'teen') as any;
+      const requestedMax = Number.parseInt(String(req.query.maxResults), 10);
+      const maxResults = Number.isFinite(requestedMax) ? Math.min(Math.max(requestedMax, 1), 12) : 8;
+      const categoryFilter = typeof req.query.category === 'string' ? req.query.category.trim().slice(0, 80) || 'Educational' : 'Educational';
 
       if (!query.trim()) {
         const pool = ageTier === 'baby' 

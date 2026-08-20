@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Search, Sparkles, FileText, Globe2 } from 'lucide-react';
+import { Search, FileText, X } from 'lucide-react';
 import { Note } from '../../types';
 import { WebResearchPanel } from '../WebResearchPanel';
 
@@ -18,9 +18,14 @@ export const SearchView: React.FC<SearchViewProps> = ({
   searchQuery, searchResults, setView, onBack, setSearchQuery, handleSearch, handleResearch, setSelectedNote,
 }) => {
   const [tab, setTab] = useState<'web' | 'notes'>('notes');
+  const query = searchQuery.trim();
+  const clearSearch = () => {
+    setSearchQuery('');
+    handleSearch('');
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-app-bg">
+    <div className="feature-workspace flex flex-col min-h-[100dvh] bg-app-bg">
       <div className="sticky top-0 z-40 bg-app-card pt-[var(--safe-top)]">
         <div className="flex items-center gap-2 px-4 py-2">
           <div className="flex-1 flex items-center gap-2 bg-app-bg px-3 h-10 rounded-xl border border-app-border focus-within:border-app-accent">
@@ -40,6 +45,7 @@ export const SearchView: React.FC<SearchViewProps> = ({
                 }
               }}
             />
+            {searchQuery && <button type="button" onClick={clearSearch} className="rounded-lg p-1 text-app-text-muted hover:bg-app-card hover:text-app-text" aria-label="Clear search"><X size={16} /></button>}
           </div>
           <button onClick={onBack || (() => setView('home'))} className="text-sm font-bold text-app-text px-2">
             Cancel
@@ -62,7 +68,7 @@ export const SearchView: React.FC<SearchViewProps> = ({
         </div>
       </div>
 
-      <main className="flex-1 overflow-y-auto pb-[var(--safe-bottom)]">
+      <main className="feature-workspace-scroll flex-1 pb-[var(--safe-bottom)]">
         {tab === 'web' ? (
           <div className="p-4">
              <WebResearchPanel query={searchQuery} />
@@ -90,8 +96,8 @@ export const SearchView: React.FC<SearchViewProps> = ({
                  <div className="w-16 h-16 rounded-full border-2 border-app-border flex items-center justify-center mb-4">
                     <Search size={32} />
                  </div>
-                 <p className="font-bold text-sm">No results found</p>
-                 <p className="text-xs">Try searching for something else</p>
+                 <p className="font-bold text-sm">{query.length === 0 ? 'Search your notes' : query.length < 2 ? 'Keep typing' : 'No matching notes'}</p>
+                 <p className="text-xs">{query.length === 0 ? 'Find a saved note by title or content.' : query.length < 2 ? 'Enter at least two characters to search.' : 'Try a different title, topic, or keyword.'}</p>
                </div>
              )}
           </div>

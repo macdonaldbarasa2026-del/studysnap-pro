@@ -645,6 +645,12 @@ export default function App() {
     localStorage.setItem('studysnap-text-size', textSize);
   }, [theme, textSize]);
 
+  // This is a user preference, not proof that browser push permission was
+  // granted. Persist it independently so a user can always opt out.
+  useEffect(() => {
+    localStorage.setItem('studysnap-notifications', String(notificationsEnabled));
+  }, [notificationsEnabled]);
+
 
   const fetchStats = async () => {
     try {

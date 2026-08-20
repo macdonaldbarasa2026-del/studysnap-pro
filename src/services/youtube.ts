@@ -36,7 +36,7 @@ export interface StudyPlaylist {
 export async function getLearningVideos(age: 'baby' | 'kid' | 'teen' | 'adult' = 'kid', topic: string = '', category: string = ''): Promise<YouTubeVideo[]> {
   try {
     const params = new URLSearchParams({ age, ...(topic ? { topic } : {}), ...(category ? { category } : {}) });
-    const res = await fetch(`/api/learning-videos?${params}`);
+    const res = await authedFetch(`/api/learning-videos?${params}`);
     if (!res.ok) throw new Error('Failed to fetch learning videos');
     const data = await res.json();
     return data.videos || [];
@@ -52,7 +52,7 @@ export async function getLearningVideos(age: 'baby' | 'kid' | 'teen' | 'adult' =
 export async function searchYouTubeEducational(query: string, ageTier: 'baby' | 'kid' | 'teen' | 'adult' = 'teen', maxResults: number = 8): Promise<YouTubeVideo[]> {
   try {
     const params = new URLSearchParams({ q: query, ageTier, maxResults: String(maxResults) });
-    const res = await fetch(`/api/youtube/search?${params}`);
+    const res = await authedFetch(`/api/youtube/search?${params}`);
     if (!res.ok) throw new Error('Search failed');
     const data = await res.json();
     return data.videos || [];

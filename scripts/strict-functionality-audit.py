@@ -16,7 +16,6 @@ warnings = []
 app = (ROOT / 'src/App.tsx').read_text()
 renderer = (ROOT / 'src/components/ViewRenderer.tsx').read_text()
 home = (ROOT / 'src/components/AdaptiveHome.tsx').read_text()
-
 # 1. Every declared view should have a renderer branch, excluding authentication
 #    state routes that are intentionally handled as special cases.
 types = (ROOT / 'src/types.ts').read_text()
