@@ -1,5 +1,5 @@
 import { VideoShelf } from './VideoShelf';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Baby, Palette, Shapes, Music, ArrowLeft, Volume2, Sparkles, Star, Heart, VolumeX, Smile } from 'lucide-react';
 
@@ -13,9 +13,33 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
   const [activity, setActivity] = useState<Activity>('menu');
   const [activeStarId, setActiveStarId] = useState<number | null>(null);
   const [celebration, setCelebration] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem('studysnap-baby-sound') !== 'silent';
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        'studysnap-baby-sound',
+        soundEnabled ? 'talk' : 'silent'
+      );
+    } catch {
+      // Local storage may be unavailable in restricted browsing contexts.
+    }
+
+    if (!soundEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, [soundEnabled]);
 
   // Web Audio Synthesizer for Musical Keys
   const playTone = (freq: number) => {
+    if (!soundEnabled || typeof window === 'undefined') return;
+
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
@@ -36,14 +60,20 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
   };
 
   const speak = (text: string) => {
+    if (!soundEnabled || typeof window === 'undefined') return;
+
     try {
+      if (!('speechSynthesis' in window)) return;
+
       window.speechSynthesis.cancel();
+
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.85;
       utterance.pitch = 1.2;
+
       window.speechSynthesis.speak(utterance);
     } catch {
-      // Fallback
+      // Speech is optional; visual learning continues without it.
     }
   };
 
@@ -181,7 +211,7 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
   );
 
   return (
-    <div className="absolute inset-0 bg-slate-50 z-[100] flex flex-col font-sans select-none overflow-hidden">
+    <div className="relative w-full min-h-full bg-slate-50 font-sans select-none">
       {/* Celebration Confetti Burst */}
       <AnimatePresence>
         {celebration && (
@@ -189,7 +219,7 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1.2 }}
             exit={{ opacity: 0, scale: 1.5 }}
-            className="fixed inset-0 pointer-events-none z-[200] flex items-center justify-center"
+            className="fixed inset-0 pointer-events-none z-[120] flex items-center justify-center"
           >
             <div className="text-8xl animate-bounce">🌟 🎉 ⭐ 🥳 🌟</div>
           </motion.div>
@@ -238,6 +268,16 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
           </div>
         )}
         
+        <button
+          type="button"
+          onClick={() => setSoundEnabled((enabled) => !enabled)}
+          aria-pressed={soundEnabled}
+          aria-label={soundEnabled ? 'Turn baby mode speech off' : 'Turn baby mode speech on'}
+          className="w-14 h-14 rounded-3xl bg-white text-sky-600 border-2 border-sky-200 shadow-sm flex items-center justify-center active:scale-95"
+        >
+          {soundEnabled ? <Volume2 size={28} /> : <VolumeX size={28} />}
+        </button>
+
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-black tracking-wider text-slate-800 uppercase flex items-center gap-2 justify-center">
             {activity === 'menu' ? 'BABY LEARN PRO' : activity.toUpperCase()}
@@ -257,7 +297,7 @@ export const EarlyLearningMode: React.FC<EarlyLearningModeProps> = ({ onExit }) 
       </div>
 
       {/* Activity Canvas */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative z-10 flex items-center justify-center">
+      <div className="w-full p-4 sm:p-6 relative z-10 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={activity}
