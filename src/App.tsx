@@ -1275,6 +1275,7 @@ export default function App() {
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
+              style={{ touchAction: 'none' }}
             />
             <motion.div 
               initial={{ x: "-100%" }}
@@ -1282,6 +1283,7 @@ export default function App() {
               exit={{ x: "-100%" }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-app-card z-[70] shadow-2xl flex flex-col pt-[var(--safe-top)] pb-[var(--safe-bottom)] pl-[var(--safe-left)]"
+              style={{ touchAction: 'pan-y' }}
             >
               <div className="p-6 sm:p-8 border-b border-app-border">
                 <div className="flex items-center gap-4 mb-6">
@@ -1564,7 +1566,13 @@ export default function App() {
       </AnimatePresence>
 
       <NativeBridge />
-      <main className="studysnap-main flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden overscroll-y-contain">
+      <main
+        className="studysnap-main flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden overscroll-y-contain"
+        style={{
+          overflowY: isMenuOpen ? 'hidden' : 'auto',
+          touchAction: isMenuOpen ? 'none' : 'pan-y'
+        }}
+      >
       <AppTopBar />
       <ViewRenderer
         view={view}
