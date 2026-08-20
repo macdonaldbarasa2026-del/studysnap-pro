@@ -313,7 +313,7 @@ export const ChatsView: React.FC<{ messages: MessageItem[]; userName: string; on
 
   if (selectedChat) {
     return (
-      <div className="h-[100dvh] bg-app-bg flex flex-col overflow-hidden">
+      <div className="min-h-[100dvh] bg-app-bg flex flex-col overflow-visible">
         <StudySnapHeader title={active?.name || 'Chat'} subtitle={active?.kind === 'ai' ? 'StudySnap AI workspace' : 'Private study conversation'} onBack={() => setSelectedChat(null)} onSearch={() => setSearching(v => !v)} onMore={() => setMenuOpen(v => !v)} />
         {searching && <div className="px-4 py-2 bg-app-card border-b border-app-border"><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Search this chat" className="w-full h-11 rounded-2xl bg-app-bg px-4 text-sm outline-none border border-app-border focus:border-app-accent" /></div>}
         {menuOpen && <div className="absolute right-4 top-20 z-30 w-56 rounded-2xl bg-app-card border border-app-border shadow-2xl p-2">
@@ -331,7 +331,7 @@ export const ChatsView: React.FC<{ messages: MessageItem[]; userName: string; on
   }
 
   return (
-    <div className="h-[100dvh] bg-app-bg flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] bg-app-bg flex flex-col overflow-visible">
       <StudySnapHeader title="Chats" subtitle="Study together or ask StudySnap AI" showBack={false} onSearch={() => setSearching(v => !v)} onMore={() => setNewChatOpen(true)} />
       {searching && <div className="px-4 py-3 bg-app-card border-b border-app-border"><div className="relative"><Search size={17} className="absolute left-4 top-3.5 text-app-text-muted"/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Search chats" className="w-full h-11 rounded-2xl bg-app-bg pl-11 pr-4 text-sm outline-none border border-app-border focus:border-app-accent" /></div></div>}
       {newChatOpen && <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-4" onClick={() => setNewChatOpen(false)}><div className="w-full max-w-md rounded-[2rem] bg-app-card border border-app-border shadow-2xl p-5" onClick={e => e.stopPropagation()}><div className="flex items-center justify-between mb-4"><div><h3 className="text-xl font-black text-app-text">Start a chat</h3><p className="text-xs text-app-text-muted">Choose a study assistant or a saved contact.</p></div><button onClick={() => setNewChatOpen(false)} className="w-10 h-10 rounded-xl hover:bg-app-bg"><X size={19}/></button></div><div className="grid gap-2">{baseChats.filter(c => c.kind !== 'community').map(chat => <button key={chat.id} onClick={() => { setNewChatOpen(false); openChat(chat.id); }} className="w-full p-4 rounded-2xl border border-app-border bg-app-bg flex items-center gap-3 text-left hover:border-app-accent"><div className="w-10 h-10 rounded-xl bg-app-accent/10 text-app-accent flex items-center justify-center">{chat.kind === 'ai' ? <SparklesIcon/> : <UserPlus size={18}/>}</div><div className="min-w-0"><p className="font-bold text-app-text truncate">{chat.name}</p><p className="text-xs text-app-text-muted truncate">{chat.lastMsg}</p></div></button>)}</div></div></div>}
@@ -437,7 +437,7 @@ export const CommunitiesView: React.FC<{ onBack: () => void; onGoLive: () => voi
   };
 
   if (selected && current) return (
-    <div className="h-[100dvh] bg-app-bg flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] bg-app-bg flex flex-col overflow-visible">
       <StudySnapHeader title={current.name} subtitle={`${current.members} members · ${current.online} active now`} onBack={() => setSelected(null)} onMore={onGoLive} />
       <div className="px-3 sm:px-5 py-2 bg-app-card border-b border-app-border"><div className="max-w-4xl mx-auto flex items-center gap-2 text-[11px] text-app-text-muted"><ShieldCheck size={14} className="text-emerald-600"/><span>Study-only community · use Report on harmful or inappropriate messages.</span></div></div>
       <div className="flex-1 overflow-y-auto px-3 sm:px-5 py-5 space-y-5">
@@ -449,7 +449,7 @@ export const CommunitiesView: React.FC<{ onBack: () => void; onGoLive: () => voi
   );
 
   return (
-    <div className="h-[100dvh] bg-app-bg flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] bg-app-bg flex flex-col overflow-visible">
       <StudySnapHeader title="Community" subtitle="Learn with people who get it" showBack={false} onSearch={() => setSearching(v => !v)} onMore={() => setShowCreate(true)} />
       {searching && <div className="px-4 py-3 bg-app-card border-b border-app-border"><div className="relative"><Search size={17} className="absolute left-4 top-3.5 text-app-text-muted"/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Search study communities" className="w-full h-11 rounded-2xl bg-app-bg pl-11 pr-4 text-sm outline-none border border-app-border focus:border-app-accent" /></div></div>}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-28">
@@ -476,7 +476,7 @@ export const CallsView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     } catch { setNotice('Call link ready to share.'); }
   };
   return (
-    <div className="h-[100dvh] bg-app-bg flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] bg-app-bg flex flex-col overflow-visible">
       <StudySnapHeader title="Calls" subtitle="Study calls" onBack={onBack} />
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-28">
         <button onClick={createCallLink} className="w-full reference-card p-5 flex items-center gap-4 text-left mb-6 hover:border-emerald-500/40 transition-colors">
