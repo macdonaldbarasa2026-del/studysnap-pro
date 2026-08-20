@@ -220,3 +220,35 @@
     overflow: visible !important;
   }
 }
+
+/*
+ * Immediate mobile page-pan policy.
+ *
+ * The application shell owns vertical page scrolling on mobile.
+ * Explicitly allow the browser to recognize the first vertical
+ * finger gesture as page scrolling.
+ */
+@media (max-width: 767px) {
+  html,
+  body,
+  #root,
+  .studysnap-app-shell,
+  .studysnap-main {
+    touch-action: pan-y;
+  }
+
+  .studysnap-app-shell,
+  .studysnap-main {
+    overscroll-behavior-y: auto !important;
+  }
+
+  .studysnap-main > * {
+    touch-action: pan-y;
+  }
+
+  [role="dialog"],
+  .allow-mobile-scroll,
+  .voice-transcript-scroll {
+    touch-action: pan-y;
+  }
+}
