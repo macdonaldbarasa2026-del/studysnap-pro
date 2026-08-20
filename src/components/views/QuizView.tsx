@@ -70,7 +70,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
   };
 
   return (
-    <div className="h-screen flex flex-col bg-app-bg">
+    <div className="min-h-full flex flex-col bg-app-bg">
       <div className="p-6 flex items-center justify-between">
         <button 
           onClick={() => {

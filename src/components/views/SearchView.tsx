@@ -20,7 +20,7 @@ export const SearchView: React.FC<SearchViewProps> = ({
   const [tab, setTab] = useState<'web' | 'notes'>('web');
 
   return (
-    <div className="min-h-[100dvh] bg-app-bg px-4 sm:px-6 lg:px-8 pt-[calc(1rem+var(--safe-top))] pb-[calc(6rem+var(--safe-bottom))]">
+    <div className="min-h-full bg-app-bg px-4 sm:px-6 lg:px-8 pt-[calc(1rem+var(--safe-top))] pb-[calc(6rem+var(--safe-bottom))]">
       <div className="max-w-6xl mx-auto">
         <header className="flex items-center gap-3 mb-5">
           <button onClick={onBack || (() => setView('home'))} className="w-11 h-11 rounded-2xl border border-app-border bg-app-card text-app-text flex items-center justify-center hover:bg-app-bg" aria-label="Back">
