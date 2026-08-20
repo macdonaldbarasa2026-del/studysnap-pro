@@ -137,7 +137,12 @@ const COLORS = [
 ];
 
 export default function App() {
-  const [view, setViewState] = useState<View>('login');
+  const [view, setViewState] = useState<View>(() => {
+    // Check if we are deep-linked to a specific view
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('studysnap-call')) return 'calls';
+    return 'login';
+  });
 
   // Give the web/PWA shell a stable platform signal so components can use
   // familiar platform conventions without duplicating the application logic.
@@ -1505,38 +1510,29 @@ export default function App() {
     statistics: 'Statistics', events: 'Academic Events', videos: 'Video Studio'
   };
 
-  const AppTopBar = () => {
-    if (view === 'home' || view === 'login') return null;
-    const label = viewLabels[view] || 'StudySnap Workspace';
-    return (
-      <header className="app-topbar" aria-label="StudySnap workspace controls">
-        <div className="app-topbar-left">
-          <button type="button" onClick={() => setIsMenuOpen(true)} className="app-topbar-icon mobile-menu-trigger" aria-label="Open StudySnap menu"><Menu size={19} /></button>
-          <div className="app-breadcrumb">
-            <span className="app-breadcrumb-muted">StudySnap</span>
-            <span aria-hidden="true">/</span>
-            <strong>{label}</strong>
+    const AppTopBar = () => {
+      if (view === 'login') return null;
+      const label = viewLabels[view] || 'StudySnap';
+    
+      return (
+        <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-app-card border-b border-app-border backdrop-blur-md bg-opacity-90">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold font-serif italic tracking-tight text-app-text">StudySnap</h1>
           </div>
-        </div>
-        <div className="app-topbar-actions">
-          <button type="button" onClick={() => setIsCommandPaletteOpen(true)} className="app-command-button" aria-label="Open command search">
-            <Search size={16} />
-            <span>Search StudySnap</span>
-            <kbd>Ctrl K</kbd>
-          </button>
-          <div className="app-status-chip" title={navigator.onLine ? 'Online' : 'Offline'}>
-            <span className={navigator.onLine ? 'app-status-dot is-online' : 'app-status-dot'} />
-            <span>{navigator.onLine ? 'Ready' : 'Offline'}</span>
-          </div>
-          {userProfile && (
-            <button type="button" onClick={() => setView('settings')} className="app-avatar" aria-label="Open account settings">
-              {(userProfile.user_name || 'S').slice(0, 1).toUpperCase()}
+          <div className="flex items-center gap-4">
+            <button onClick={() => setView('scanner')} className="text-app-text">
+              <Plus size={24} strokeWidth={2} />
             </button>
-          )}
-        </div>
-      </header>
-    );
-  };
+            <button onClick={() => setView('notifications')} className="text-app-text relative">
+              <Star size={24} strokeWidth={2} />
+            </button>
+            <button onClick={() => setView('chats')} className="text-app-text">
+              <MessageSquare size={24} strokeWidth={2} />
+            </button>
+          </div>
+        </header>
+      );
+    };
 
   return (
     <div className={`studysnap-app-shell h-[100dvh] min-h-[100dvh] flex flex-col theme-${theme} neural-bg relative overflow-hidden`}>

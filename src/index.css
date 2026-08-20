@@ -2,19 +2,19 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-serif: "Playfair Display", serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --font-handwriting: "Caveat", cursive;
   
-  --color-app-bg: var(--app-bg, #f5f8ff);
+  --color-app-bg: var(--app-bg, #ffffff);
   --color-app-card: var(--app-card, #ffffff);
-  --color-app-text: var(--app-text, #0a0a0a);
-  --color-app-text-muted: var(--app-text-muted, #737373);
-  --color-app-border: var(--app-border, #f0f0f0);
-  --color-app-accent: var(--app-accent, #3b2de4);
-  --color-app-accent-soft: var(--app-accent-soft, #eef2ff);
+  --color-app-text: var(--app-text, #050505);
+  --color-app-text-muted: var(--app-text-muted, #65676b);
+  --color-app-border: var(--app-border, #dbdbdb);
+  --color-app-accent: var(--app-accent, #0095f6);
+  --color-app-accent-soft: var(--app-accent-soft, #e7f3ff);
 }
 
 @layer base {
@@ -28,51 +28,45 @@
   body {
     background-color: var(--color-app-bg);
     color: var(--color-app-text);
-    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 0.3s ease, color 0.3s ease;
     @apply antialiased;
   }
 
   h1, h2, .display-text {
-    font-family: var(--font-display);
-    letter-spacing: -0.025em;
-  }
-
-  .data-value {
-    font-family: var(--font-mono);
-    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 }
 
 .theme-white, .theme-light {
-  --app-bg: #f7f7f8;
+  --app-bg: #ffffff;
   --app-card: #ffffff;
-  --app-text: #1f1f1f;
-  --app-text-muted: #6b6b6b;
-  --app-border: #e6e6e6;
-  --app-accent: #2563eb;
-  --app-accent-soft: #eff6ff;
+  --app-text: #000000;
+  --app-text-muted: #737373;
+  --app-border: #dbdbdb;
+  --app-accent: #0095f6;
+  --app-accent-soft: #e0f1ff;
 }
 
-/* Pure OLED Black (Lights Out / AMOLED / True Pure Dark #000000) */
+/* Instagram Dark Mode style */
 .theme-black, .theme-dark, .theme-oled {
-  --app-bg: #212121;
-  --app-card: #2f2f2f;
-  --app-text: #f7f7f8;
-  --app-text-muted: #b4b4b4;
-  --app-border: #424242;
-  --app-accent: #66a6ff;
-  --app-accent-soft: #2a3a50;
+  --app-bg: #000000;
+  --app-card: #000000;
+  --app-text: #f5f5f5;
+  --app-text-muted: #a8a8a8;
+  --app-border: #262626;
+  --app-accent: #0095f6;
+  --app-accent-soft: #1a1a1a;
 }
 
-/* Deep Midnight Slate */
+/* Deep Midnight Slate (Premium) */
 .theme-midnight {
-  --app-bg: #181a1f;
-  --app-card: #24272d;
-  --app-text: #f7f7f8;
-  --app-text-muted: #a7adb7;
-  --app-border: #383d46;
-  --app-accent: #67b7ff;
-  --app-accent-soft: #203548;
+  --app-bg: #121212;
+  --app-card: #1c1c1c;
+  --app-text: #ffffff;
+  --app-text-muted: #a0a0a0;
+  --app-border: #333333;
+  --app-accent: #0084ff;
+  --app-accent-soft: #1e2d3d;
 }
 
 

@@ -17,27 +17,20 @@ interface SearchViewProps {
 export const SearchView: React.FC<SearchViewProps> = ({
   searchQuery, searchResults, setView, onBack, setSearchQuery, handleSearch, handleResearch, setSelectedNote,
 }) => {
-  const [tab, setTab] = useState<'web' | 'notes'>('web');
+  const [tab, setTab] = useState<'web' | 'notes'>('notes');
 
   return (
-    <div className="min-h-full bg-app-bg px-4 sm:px-6 lg:px-8 pt-[calc(1rem+var(--safe-top))] pb-[calc(6rem+var(--safe-bottom))]">
-      <div className="max-w-6xl mx-auto">
-        <header className="flex items-center gap-3 mb-5">
-          <button onClick={onBack || (() => setView('home'))} className="w-11 h-11 rounded-2xl border border-app-border bg-app-card text-app-text flex items-center justify-center hover:bg-app-bg" aria-label="Back">
-            <ChevronLeft size={22} />
-          </button>
-          <div className="min-w-0"><p className="text-[10px] font-black uppercase tracking-[0.18em] text-app-text-muted">StudySnap Search</p><h1 className="text-xl sm:text-2xl font-black text-app-text truncate">Find what you need</h1></div>
-        </header>
-
-        <div className="rounded-3xl border border-app-border bg-app-card p-2 shadow-sm">
-          <div className="flex items-center gap-2 px-3">
-            <Search className="text-app-text-muted shrink-0" size={21} />
+    <div className="flex flex-col h-screen bg-app-bg">
+      <div className="sticky top-0 z-40 bg-app-card pt-[var(--safe-top)]">
+        <div className="flex items-center gap-2 px-4 py-2">
+          <div className="flex-1 flex items-center gap-2 bg-app-bg px-3 h-10 rounded-xl border border-app-border focus-within:border-app-accent">
+            <Search className="text-app-text-muted shrink-0" size={18} />
             <input
               autoFocus
               type="search"
               inputMode="search"
-              placeholder={tab === 'web' ? 'Search the web…' : 'Search your notes…'}
-              className="min-w-0 flex-1 bg-transparent py-3.5 text-base text-app-text outline-none placeholder:text-app-text-muted"
+              placeholder="Search..."
+              className="flex-1 bg-transparent text-sm text-app-text outline-none"
               value={searchQuery}
               onChange={e => { setSearchQuery(e.target.value); if (tab === 'notes') handleSearch(e.target.value); }}
               onKeyDown={e => {
@@ -47,35 +40,63 @@ export const SearchView: React.FC<SearchViewProps> = ({
                 }
               }}
             />
-            <button onClick={() => searchQuery.trim() && handleResearch(searchQuery.trim())} className="ss-btn ss-btn-primary hidden sm:flex" title="AI research">
-              <Sparkles size={16} /> Research
-            </button>
           </div>
+          <button onClick={onBack || (() => setView('home'))} className="text-sm font-bold text-app-text px-2">
+            Cancel
+          </button>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-4">
-          <button onClick={() => setTab('web')} className={`ss-btn ${tab === 'web' ? 'ss-btn-selected' : 'ss-btn-secondary'}`}><Globe2 size={15} className="inline mr-2" />Web</button>
-          <button onClick={() => setTab('notes')} className={`ss-btn ${tab === 'notes' ? 'ss-btn-selected' : 'ss-btn-secondary'}`}><FileText size={15} className="inline mr-2" />My notes</button>
-          <button onClick={() => searchQuery.trim() && handleResearch(searchQuery.trim())} className="ss-btn ss-btn-accent">AI research</button>
+        <div className="flex border-b border-app-border px-4">
+          <button 
+            onClick={() => setTab('notes')} 
+            className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${tab === 'notes' ? 'border-app-accent text-app-accent' : 'border-transparent text-app-text-muted'}`}
+          >
+            My Notes
+          </button>
+          <button 
+            onClick={() => setTab('web')} 
+            className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${tab === 'web' ? 'border-app-accent text-app-accent' : 'border-transparent text-app-text-muted'}`}
+          >
+            Web & AI
+          </button>
         </div>
-
-        <section className="mt-5">
-          {tab === 'web' ? (
-            <WebResearchPanel query={searchQuery} />
-          ) : (
-            <div className="space-y-3">
-              {searchResults.map(note => (
-                <button key={note.id} onClick={() => { setSelectedNote(note); setView('note'); }} className="w-full p-4 rounded-2xl bg-app-card border border-app-border flex items-center gap-4 text-left hover:border-app-accent/40">
-                  <div className="w-11 h-11 rounded-xl bg-app-bg flex items-center justify-center text-app-text-muted shrink-0"><FileText size={21} /></div>
-                  <div className="min-w-0"><h3 className="font-bold text-app-text truncate">{note.title}</h3><p className="text-sm text-app-text-muted truncate mt-1">{note.content.substring(0, 100)}…</p></div>
-                </button>
-              ))}
-              {searchQuery && searchResults.length === 0 && <div className="rounded-2xl border border-dashed border-app-border p-10 text-center text-app-text-muted">No matching notes.</div>}
-              {!searchQuery && <div className="rounded-2xl border border-dashed border-app-border p-10 text-center text-app-text-muted">Search your saved notes by title or content.</div>}
-            </div>
-          )}
-        </section>
       </div>
+
+      <main className="flex-1 overflow-y-auto pb-[var(--safe-bottom)]">
+        {tab === 'web' ? (
+          <div className="p-4">
+             <WebResearchPanel query={searchQuery} />
+          </div>
+        ) : (
+          <div className="p-4 space-y-3">
+             {searchResults.length > 0 ? (
+               searchResults.map(note => (
+                <button 
+                  key={note.id} 
+                  onClick={() => { setSelectedNote(note); setView('note'); }} 
+                  className="w-full p-4 rounded-xl bg-app-card border border-app-border flex items-center gap-3 text-left active:bg-app-bg"
+                >
+                  <div className="w-10 h-10 rounded-full bg-app-bg flex items-center justify-center text-app-accent shrink-0">
+                    <FileText size={20} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-app-text truncate">{note.title}</h3>
+                    <p className="text-xs text-app-text-muted truncate mt-0.5">{note.content.substring(0, 100)}</p>
+                  </div>
+                </button>
+              ))
+             ) : (
+               <div className="flex flex-col items-center justify-center py-20 text-app-text-muted">
+                 <div className="w-16 h-16 rounded-full border-2 border-app-border flex items-center justify-center mb-4">
+                    <Search size={32} />
+                 </div>
+                 <p className="font-bold text-sm">No results found</p>
+                 <p className="text-xs">Try searching for something else</p>
+               </div>
+             )}
+          </div>
+        )}
+      </main>
     </div>
   );
 };

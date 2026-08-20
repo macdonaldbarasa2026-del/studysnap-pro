@@ -315,27 +315,82 @@ export const AdaptiveHome: React.FC<AdaptiveHomeProps> = ({
         </div>
       </header>
 
-      <section className="home-command" aria-labelledby="home-command-title">
-        <div className="home-command-copy">
-          <div className="home-kicker"><Sparkles size={14} /> StudySnap</div>
-          <h2 id="home-command-title">What do you want to learn today?</h2>
-          <p>Ask, scan, practice, or continue where you left off. StudySnap adapts to your learning style.</p>
+                  <section className="mt-4 px-4 overflow-hidden">
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+          <button onClick={onAddSubject} className="flex flex-col items-center gap-1 shrink-0">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-2 border-app-border flex items-center justify-center text-app-text bg-app-card">
+                <Plus size={32} strokeWidth={1.5} />
+              </div>
+              <div className="absolute bottom-0.5 right-0.5 w-5 h-5 bg-app-accent rounded-full border-2 border-app-card flex items-center justify-center text-white">
+                <Plus size={12} strokeWidth={3} />
+              </div>
+            </div>
+            <span className="text-[11px] text-app-text-muted">Your Story</span>
+          </button>
+          {subjects.map((subject) => (
+            <button key={subject.id} onClick={() => onSelectSubject(subject)} className="flex flex-col items-center gap-1 shrink-0">
+              <div className="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600">
+                <div className="w-full h-full rounded-full border-2 border-app-card overflow-hidden bg-app-card flex items-center justify-center">
+                  <div className={`w-full h-full ${subject.color} flex items-center justify-center text-white`}>
+                    <BookOpen size={24} />
+                  </div>
+                </div>
+              </div>
+              <span className="text-[11px] text-app-text truncate w-16 text-center">{subject.name}</span>
+            </button>
+          ))}
         </div>
-        <button type="button" onClick={() => onViewChange('studysnap-ai')} className="home-primary-button">
-          <MessageSquare size={18} /> Ask StudySnap <ArrowRight size={17} />
-        </button>
       </section>
 
-      <section className="home-continue" aria-labelledby="home-continue-title">
-        <div className="home-continue-copy">
-          <div className="home-continue-icon"><Target size={19} /></div>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-app-text-muted">Next best step</p>
-            <h2 id="home-continue-title">{nextLabel}</h2>
-            <p>{subjects.length ? `${subjects.length} learning area${subjects.length === 1 ? '' : 's'} in your workspace` : 'Create a learning area or jump straight into AI.'}</p>
+      {/* Feed Style Posts */}
+      <section className="mt-4 space-y-4 pb-20">
+        {subjects.map(subject => (
+           <div key={`feed-${subject.id}`} className="bg-app-card border-y sm:border sm:rounded-xl border-app-border overflow-hidden">
+              <div className="p-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                    <BookOpen size={16} />
+                  </div>
+                  <span className="text-sm font-bold text-app-text">{subject.name}</span>
+                </div>
+                <MoreHorizontal size={18} className="text-app-text-muted" />
+              </div>
+              
+              <div className="aspect-square bg-app-bg flex items-center justify-center text-app-text-muted">
+                 <div className="text-center p-8">
+                    <Sparkles size={48} className="mx-auto mb-4 opacity-20" />
+                    <p className="text-sm font-medium">No recent activity in {subject.name}</p>
+                    <button onClick={() => onSelectSubject(subject)} className="mt-4 text-app-accent font-bold text-sm">View Learning Area</button>
+                 </div>
+              </div>
+
+              <div className="p-3 space-y-2">
+                <div className="flex items-center gap-4">
+                  <Star size={24} />
+                  <MessageSquare size={24} />
+                  <ArrowRight size={24} />
+                </div>
+                <div className="text-sm">
+                  <span className="font-bold text-app-text">{stats.notes} notes</span> organized in this area
+                </div>
+                <div className="text-[10px] text-app-text-muted uppercase tracking-wider">
+                  Updated just now
+                </div>
+              </div>
+           </div>
+        ))}
+
+        {subjects.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-20 px-10 text-center">
+             <div className="w-20 h-20 rounded-full border-2 border-app-border flex items-center justify-center mb-6">
+                <LayoutDashboard size={40} className="text-app-text-muted" />
+             </div>
+             <h2 className="text-xl font-bold mb-2">Welcome to StudySnap</h2>
+             <p className="text-sm text-app-text-muted mb-8">Follow your subjects to see their updates and study materials in your feed.</p>
+             <button onClick={onAddSubject} className="ss-btn ss-btn-primary">Add your first subject</button>
           </div>
-        </div>
-        <button type="button" onClick={nextAction} className="home-secondary-button">Continue <ArrowRight size={16} /></button>
+        )}
       </section>
 
       {/* USER-NEED FEATURE: deterministic daily study plan.
