@@ -62,7 +62,7 @@ export const StudyRoomView: React.FC<StudyRoomViewProps> = ({
   if (!currentRoom) return null;
 
   return (
-    <div className="flex flex-col h-screen bg-app-bg">
+    <div className="min-h-full flex flex-col bg-app-bg">
       {/* Header */}
       <div className="p-6 bg-app-card border-b border-app-border flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -135,7 +135,7 @@ export const StudyRoomView: React.FC<StudyRoomViewProps> = ({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 pb-32">
+      <div className="p-6 pb-32">
         {roomTab === 'chat' && (
           <div className="space-y-4">
             {roomMessages.map(msg => (
